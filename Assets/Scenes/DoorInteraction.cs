@@ -1,43 +1,26 @@
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class DoorInteraction : MonoBehaviour
 {
-    public float speed = 5f;
+    [Header("Door Settings")]
+    public string targetSceneName;
+    public bool isPlayerInRange = false;
 
-    private Rigidbody2D rb;
-    private Animator anim;
-    private SpriteRenderer sr;
-
-    void Start()
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        rb = GetComponent<Rigidbody2D>();
-        anim = GetComponent<Animator>();
-        sr = GetComponent<SpriteRenderer>();
+        if (collision.CompareTag("Player") || collision.GetComponent<Player>() != null)
+        {
+            isPlayerInRange = true;
+            Debug.Log("Player entered door interaction zone: " + gameObject.name);
+        }
     }
 
-    void Update()
+    private void OnTriggerExit2D(Collider2D collision)
     {
-        float moveInput = Input.GetAxisRaw("Horizontal");
-
-        rb.linearVelocity = new Vector2(moveInput * speed, rb.linearVelocity.y);
-
-        // INI BAGIAN YANG NGASIH TAU ANIMATOR BUAT NYALA/MATI
-        if (moveInput != 0)
+        if (collision.CompareTag("Player") || collision.GetComponent<Player>() != null)
         {
-            anim.SetBool("isWalking", true);
-        }
-        else
-        {
-            anim.SetBool("isWalking", false);
-        }
-
-        if (moveInput < 0)
-        {
-            sr.flipX = true;
-        }
-        else if (moveInput > 0)
-        {
-            sr.flipX = false;
+            isPlayerInRange = false;
+            Debug.Log("Player exited door interaction zone: " + gameObject.name);
         }
     }
 }
